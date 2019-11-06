@@ -27,16 +27,16 @@ public class Hello {
         this.client = new OkHttpClient();
     }
 
-    private String getHttp(int port, String path, String param, String value) {
+    private String getHttp(Span span, int port, String path, String param, String value) {
         try {
             HttpUrl url = new HttpUrl.Builder().scheme("http").host("localhost").port(port).addPathSegment(path)
                     .addQueryParameter(param, value).build();
             Request.Builder requestBuilder = new Request.Builder().url(url);
             
-            Tags.SPAN_KIND.set(tracer.activeSpan(), Tags.SPAN_KIND_CLIENT);
-            Tags.HTTP_METHOD.set(tracer.activeSpan(), "GET");
-            Tags.HTTP_URL.set(tracer.activeSpan(), url.toString());
-            tracer.inject(tracer.activeSpan().context(), Format.Builtin.HTTP_HEADERS, new RequestBuilderCarrier(requestBuilder));
+            Tags.SPAN_KIND.set(span, Tags.SPAN_KIND_CLIENT);
+            Tags.HTTP_METHOD.set(span, "GET");
+            Tags.HTTP_URL.set(span, url.toString());
+            tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, new RequestBuilderCarrier(requestBuilder));
 
             
             Request request = requestBuilder.build();
@@ -63,7 +63,7 @@ public class Hello {
     	Span span = tracer.buildSpan("formatString").asChildOf(root_span).start();
     	
         
-        String helloStr = getHttp(8081, "format", "helloTo", helloTo);
+        String helloStr = getHttp(span, 8081, "format", "helloTo", helloTo);
         
         span.log(ImmutableMap.of("event", "format string", "anykey", helloStr));
         span.finish();
@@ -75,7 +75,7 @@ public class Hello {
         // log
         span.log(ImmutableMap.of("event", "begin println, and sleep 10s", "anykey", helloStr));
         System.out.println(helloStr);
-        getHttp(8082, "publish", "helloStr", helloStr);
+        getHttp(span, 8082, "publish", "helloStr", helloStr);
         nsleep(span);
         // log
         span.log(ImmutableMap.of("event", "after println"));
