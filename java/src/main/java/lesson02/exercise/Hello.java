@@ -72,7 +72,7 @@ public class Hello {
             throw new IllegalArgumentException("Expecting one argument");
         }
         String helloTo = args[0];
-        Tracer tracer = initTracer("lesson1");
+        Tracer tracer = initTracer("lesson2");
         new Hello(tracer).sayHello(helloTo);
         //new Hello(GlobalTracer.get()).sayHello(helloTo);
     }
