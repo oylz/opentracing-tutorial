@@ -36,12 +36,10 @@ public class Hello {
 
 Run it:
 ```
-$ ./run.sh lesson01.exercise.Hello Bryan
-Hello, Bryan!
+$ java -jar lesson1.jar xyz
+Hello, xyz!
 ```
 
-Here we're using a simple helper script `run.sh` that executes a class via Maven,
-as well as strips out some of it diagnostic logging.
 
 ### Create a trace
 
@@ -135,9 +133,9 @@ the tracer as originating from a `hello-world` service.
 If we run the program now, we should see a span logged:
 
 ```
-$ ./run.sh lesson01.exercise.Hello Bryan
+$ java -jar lesson1.jar xyz
 INFO io.jaegertracing.Configuration - Initialized tracer=JaegerTracer(version=Java-0.32.0, serviceName=hello-world, ...)
-Hello, Bryan!
+Hello, xyz!
 INFO io.jaegertracing.internal.reporters.LoggingReporter - Span reported: aa206e9b64ca5f8b:aa206e9b64ca5f8b:0:1 - say-hello
 ```
 
