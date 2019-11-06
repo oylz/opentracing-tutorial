@@ -117,16 +117,16 @@ public class Hello {
     }
     private void sayHello(String helloTo) {
     	// new span
-        Span span = tracer.buildSpan("lesson01.exercise.Hello.sayHello").start();
+        Scope scope = tracer.buildSpan("lesson01.exercise.Hello.sayHello").startActive(true);
         // tag
-        span.setTag("add a tag", helloTo);
+        scope.span().setTag("add a tag", helloTo);
         
         
         String helloStr = formatString(helloTo);
         printHello(helloStr);
         
         // finish span
-        span.finish();
+        scope.span().finish();
     }
 
     public static void main(String[] args) {
