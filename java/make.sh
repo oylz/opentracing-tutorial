@@ -19,9 +19,9 @@ function build(){
 #build lesson1 lesson01.exercise.Hello
 #build lesson2 lesson02.exercise.Hello 
 
-#build formatter_server lesson03.exercise.Formatter
-#build publisher_server lesson03.exercise.Publisher
+build formatter_server lesson03.exercise.Formatter
+build publisher_server lesson03.exercise.Publisher
 build lesson3 lesson03.exercise.Hello
-
+build slesson3 lesson03.solution.Hello
 
 
