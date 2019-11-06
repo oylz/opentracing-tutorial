@@ -42,17 +42,23 @@ public class Hello {
         // log
         span.log(ImmutableMap.of("event", "begin println, and sleep 10s", "anykey", helloStr));
         System.out.println(helloStr);
+        nsleep(span);
+        // log
+        span.log(ImmutableMap.of("event", "after println"));
+        span.finish();
+    }
+    private void nsleep(Span parent) {
+    	Span span = tracer.buildSpan("nsleep").asChildOf(parent).start();
+    	span.log(ImmutableMap.of("event", "begin sleep"));
         try {
         	Thread.sleep(10000);
         }
         catch(Exception e) {
         	e.printStackTrace();
         }
-        // log
-        span.log(ImmutableMap.of("event", "after println"));
+        span.log(ImmutableMap.of("event", "end sleep"));
         span.finish();
     }
-    
     private void sayHello(String helloTo) {
     	// new span
         Span span = tracer.buildSpan("lesson01.exercise.Hello.sayHello").start();
