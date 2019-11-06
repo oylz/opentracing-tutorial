@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-rm bin -rf
-mkdir bin
+#rm bin -rf
+mkdir -p bin
 
 function build(){
     JN=$1
@@ -16,12 +16,12 @@ function build(){
     cp target/$JN".jar" ./bin/
 }
 
-build lesson1 lesson01.exercise 
-build lesson2 lesson02.exercise 
+#build lesson1 lesson01.exercise.Hello
+#build lesson2 lesson02.exercise.Hello 
 
-build formatter_server lesson03.exercise.Formatter
-build publisher_server lesson03.exercise.Publisher
-
+#build formatter_server lesson03.exercise.Formatter
+#build publisher_server lesson03.exercise.Publisher
+build lesson3 lesson03.exercise.Hello
 
 
 
