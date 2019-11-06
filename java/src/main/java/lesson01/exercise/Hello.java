@@ -36,8 +36,14 @@ public class Hello {
         span.setTag("add a tag", helloTo);
         String helloStr = String.format("Hello, %s!", helloTo);
         // log
-        span.log(ImmutableMap.of("event", "begin println", "anykey", helloStr));
+        span.log(ImmutableMap.of("event", "begin println, and sleep 10s", "anykey", helloStr));
         System.out.println(helloStr);
+        try {
+        	Thread.sleep(10000);
+        }
+        catch(Exception e) {
+        	e.printStackTrace();
+        }
         // log
         span.log(ImmutableMap.of("event", "after println"));
         
