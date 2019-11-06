@@ -4,6 +4,8 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.util.GlobalTracer;
 
+import com.google.common.collect.ImmutableMap;
+
 import io.jaegertracing.Configuration;
 import io.jaegertracing.Configuration.ReporterConfiguration;
 import io.jaegertracing.Configuration.SamplerConfiguration;
@@ -26,11 +28,18 @@ public class Hello {
     }
 
     private void sayHello(String helloTo) {
+    	// new span
         Span span = tracer.buildSpan("say-hello").start();
-
+        // tag
+        span.setTag("tag-hello-to", helloTo);
         String helloStr = String.format("Hello, %s!", helloTo);
+        // log
+        span.log(ImmutableMap.of("event", "string-format", "value", helloStr));
         System.out.println(helloStr);
-
+        // log
+        span.log(ImmutableMap.of("event", "println"));
+        
+        // finish span
         span.finish();
     }
 
