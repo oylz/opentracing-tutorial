@@ -1,5 +1,6 @@
 package lesson02.exercise;
 
+import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 
@@ -28,36 +29,91 @@ public class Hello {
         this.tracer = tracer;
     }
 
-    private String formatString(Span root_span, String helloTo) {
-    	Span span = tracer.buildSpan("formatString").asChildOf(root_span).start();
+//    private String formatString(Span root_span, String helloTo) {
+//    	Span span = tracer.buildSpan("formatString").asChildOf(root_span).start();
+//    	
+//        String helloStr = String.format("Hello, %s!", helloTo);
+//        span.log(ImmutableMap.of("event", "format string", "anykey", helloStr));
+//        span.finish();
+//        return helloStr;
+//    }
+//
+//    private void printHello(Span root_span, String helloStr) {
+//    	Span span = tracer.buildSpan("printHello").asChildOf(root_span).start();
+//        // log
+//        span.log(ImmutableMap.of("event", "begin println, and sleep 10s", "anykey", helloStr));
+//        System.out.println(helloStr);
+//        nsleep(span);
+//        // log
+//        span.log(ImmutableMap.of("event", "after println"));
+//        span.finish();
+//    }
+//    private void nsleep(Span parent) {
+//    	Span span = tracer.buildSpan("nsleep").asChildOf(parent).start();
+//    	span.log(ImmutableMap.of("event", "begin sleep"));
+//        try {
+//        	Thread.sleep(10000);
+//        }
+//        catch(Exception e) {
+//        	e.printStackTrace();
+//        }
+//        span.log(ImmutableMap.of("event", "end sleep"));
+//        span.finish();
+//    }
+//    private void sayHello(String helloTo) {
+//    	// new span
+//        Span span = tracer.buildSpan("lesson01.exercise.Hello.sayHello").start();
+//        // tag
+//        span.setTag("add a tag", helloTo);
+//        
+//        
+//        String helloStr = formatString(span, helloTo);
+//        printHello(span, helloStr);
+//        
+//        // finish span
+//        span.finish();
+//    }
+//
+//    public static void main(String[] args) {
+//        if (args.length != 1) {
+//            throw new IllegalArgumentException("Expecting one argument");
+//        }
+//        String helloTo = args[0];
+//        Tracer tracer = initTracer("lesson2");
+//        new Hello(tracer).sayHello(helloTo);
+//        //new Hello(GlobalTracer.get()).sayHello(helloTo);
+//    }
+    
+    // ============scope============================================================
+    // startActive() automatically creates a ChildOf reference to the previously active span, 
+    // so that we don't have to use asChildOf() builder method explicitly
+    private String formatString(String helloTo) {
+    	Scope scope= tracer.buildSpan("formatString").startActive(true);
     	
         String helloStr = String.format("Hello, %s!", helloTo);
-        span.log(ImmutableMap.of("event", "format string", "anykey", helloStr));
-        span.finish();
+        scope.span().log(ImmutableMap.of("event", "format string", "anykey", helloStr));
         return helloStr;
     }
 
-    private void printHello(Span root_span, String helloStr) {
-    	Span span = tracer.buildSpan("printHello").asChildOf(root_span).start();
+    private void printHello(String helloStr) {
+    	Scope scope = tracer.buildSpan("printHello").startActive(true);
         // log
-        span.log(ImmutableMap.of("event", "begin println, and sleep 10s", "anykey", helloStr));
+    	scope.span().log(ImmutableMap.of("event", "begin println, and sleep 10s", "anykey", helloStr));
         System.out.println(helloStr);
-        nsleep(span);
+        nsleep();
         // log
-        span.log(ImmutableMap.of("event", "after println"));
-        span.finish();
+        scope.span().log(ImmutableMap.of("event", "after println"));
     }
-    private void nsleep(Span parent) {
-    	Span span = tracer.buildSpan("nsleep").asChildOf(parent).start();
-    	span.log(ImmutableMap.of("event", "begin sleep"));
+    private void nsleep() {
+    	Scope scope = tracer.buildSpan("nsleep").startActive(true);
+    	scope.span().log(ImmutableMap.of("event", "begin sleep"));
         try {
         	Thread.sleep(10000);
         }
         catch(Exception e) {
         	e.printStackTrace();
         }
-        span.log(ImmutableMap.of("event", "end sleep"));
-        span.finish();
+        scope.span().log(ImmutableMap.of("event", "end sleep"));
     }
     private void sayHello(String helloTo) {
     	// new span
@@ -66,8 +122,8 @@ public class Hello {
         span.setTag("add a tag", helloTo);
         
         
-        String helloStr = formatString(span, helloTo);
-        printHello(span, helloStr);
+        String helloStr = formatString(helloTo);
+        printHello(helloStr);
         
         // finish span
         span.finish();
@@ -81,7 +137,7 @@ public class Hello {
         Tracer tracer = initTracer("lesson2");
         new Hello(tracer).sayHello(helloTo);
         //new Hello(GlobalTracer.get()).sayHello(helloTo);
-    }
+    }    
 }
 
 
