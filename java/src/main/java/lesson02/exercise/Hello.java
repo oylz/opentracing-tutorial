@@ -3,6 +3,7 @@ package lesson02.exercise;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import lib.Tracing;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -14,14 +15,6 @@ import io.jaegertracing.internal.JaegerTracer;
 
 
 public class Hello {
-    public static JaegerTracer initTracer(String service) {
-    	// will add a tag [sampler.type]
-        SamplerConfiguration samplerConfig = SamplerConfiguration.fromEnv().withType("const").withParam(1);
-        // will add a tag [sampler.param]
-        ReporterConfiguration reporterConfig = ReporterConfiguration.fromEnv().withLogSpans(true);
-        Configuration config = new Configuration(service).withSampler(samplerConfig).withReporter(reporterConfig);
-        return config.getTracer();
-    }
 
     private final Tracer tracer;
 
@@ -29,6 +22,14 @@ public class Hello {
         this.tracer = tracer;
     }
 
+//  public static JaegerTracer initTracer(String service) {
+//	// will add a tag [sampler.type]
+//    SamplerConfiguration samplerConfig = SamplerConfiguration.fromEnv().withType("const").withParam(1);
+//    // will add a tag [sampler.param]
+//    ReporterConfiguration reporterConfig = ReporterConfiguration.fromEnv().withLogSpans(true);
+//    Configuration config = new Configuration(service).withSampler(samplerConfig).withReporter(reporterConfig);
+//    return config.getTracer();
+//}    
 //    private String formatString(Span root_span, String helloTo) {
 //    	Span span = tracer.buildSpan("formatString").asChildOf(root_span).start();
 //    	
@@ -131,7 +132,7 @@ public class Hello {
             throw new IllegalArgumentException("Expecting one argument");
         }
         String helloTo = args[0];
-        Tracer tracer = initTracer("lesson2");
+        Tracer tracer = Tracing.init("lesson2");
         new Hello(tracer).sayHello(helloTo);
         //new Hello(GlobalTracer.get()).sayHello(helloTo);
     }    
