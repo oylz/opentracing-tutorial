@@ -116,17 +116,14 @@ public class Hello {
         scope.span().log(ImmutableMap.of("event", "end sleep"));
     }
     private void sayHello(String helloTo) {
-    	// new span
+    	// new scope
         Scope scope = tracer.buildSpan("lesson01.exercise.Hello.sayHello").startActive(true);
         // tag
         scope.span().setTag("add a tag", helloTo);
         
         
         String helloStr = formatString(helloTo);
-        printHello(helloStr);
-        
-        // finish span
-        scope.span().finish();
+        printHello(helloStr);        
     }
 
     public static void main(String[] args) {
