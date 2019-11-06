@@ -10,6 +10,8 @@ import io.jaegertracing.Configuration.SamplerConfiguration;
 import io.jaegertracing.internal.JaegerTracer;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import io.opentracing.propagation.Format;
+import io.opentracing.tag.Tags;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -30,6 +32,13 @@ public class Hello {
             HttpUrl url = new HttpUrl.Builder().scheme("http").host("localhost").port(port).addPathSegment(path)
                     .addQueryParameter(param, value).build();
             Request.Builder requestBuilder = new Request.Builder().url(url);
+            
+            Tags.SPAN_KIND.set(tracer.activeSpan(), Tags.SPAN_KIND_CLIENT);
+            Tags.HTTP_METHOD.set(tracer.activeSpan(), "GET");
+            Tags.HTTP_URL.set(tracer.activeSpan(), url.toString());
+            tracer.inject(tracer.activeSpan().context(), Format.Builtin.HTTP_HEADERS, new RequestBuilderCarrier(requestBuilder));
+
+            
             Request request = requestBuilder.build();
             Response response = client.newCall(request).execute();
             if (response.code() != 200) {
