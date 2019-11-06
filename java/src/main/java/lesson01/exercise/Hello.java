@@ -2,7 +2,6 @@ package lesson01.exercise;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.opentracing.util.GlobalTracer;
 
 import com.google.common.collect.ImmutableMap;
 
